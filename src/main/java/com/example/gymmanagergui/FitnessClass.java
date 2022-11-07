@@ -10,7 +10,7 @@ public class FitnessClass {
     private final String instructor;
     private final Time time;
     private final Location location;
-    private final ClassType classType;
+    private final FitnessClassType classType;
     private final String classInfo;
 
     /**
@@ -18,7 +18,7 @@ public class FitnessClass {
      *
      * @param classType classType
      */
-    public FitnessClass(ClassType classType, String instructor, Time time, Location location){
+    public FitnessClass(FitnessClassType classType, String instructor, Time time, Location location){
         this.classType = classType;
         this.instructor = instructor;
         this.time = time;
@@ -30,7 +30,7 @@ public class FitnessClass {
      * This is to get the fitness class type
      * @return class type
      */
-    public ClassType getClassType(){
+    public FitnessClassType getClassType(){
         return this.classType;
     }
 

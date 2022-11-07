@@ -5,7 +5,7 @@ package com.example.gymmanagergui;
  * Includes class name, instructor, time, and index
  * @author ALEJANDRO HERRERA-PINEDA, HURUY BELAY
  */
-public enum ClassType {
+public enum FitnessClassType {
     PILATES("Pilates"),
     SPINNING("Spinning"),
     CARDIO("Cardio"),
@@ -17,7 +17,7 @@ public enum ClassType {
      *
      * @param classtype the class type
      * */
-    ClassType(String classtype) {
+    FitnessClassType(String classtype) {
         this.name = classtype;
     }
 
@@ -35,16 +35,16 @@ public enum ClassType {
      * @param classtype it is the class type
      * @return the class type of the gym fitness, if string is not valid location, returns NA
      */
-    public static ClassType idClassType(String classtype){
+    public static FitnessClassType idClassType(String classtype){
         switch (classtype.toLowerCase()){
             case "pilates":
-                return ClassType.PILATES;
+                return FitnessClassType.PILATES;
             case "spinning":
-                return ClassType.SPINNING;
+                return FitnessClassType.SPINNING;
             case "cardio":
-                return ClassType.CARDIO;
+                return FitnessClassType.CARDIO;
             default:
-                return ClassType.NA;
+                return FitnessClassType.NA;
         }
     }
 }

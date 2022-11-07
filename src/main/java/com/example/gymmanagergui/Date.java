@@ -24,11 +24,18 @@ public class Date implements Comparable<Date> {
     public Date(String date) {
         String[] string = date.split("/");
         if (string.length != 3) {
-            throw new IllegalArgumentException("Invalid date");
+            string = date.split("-");
+            if(string.length != 3)
+                throw new IllegalArgumentException("Invalid date");
+            month = Integer.parseInt(string[1]);
+            day = Integer.parseInt(string[2]);
+            year = Integer.parseInt(string[0]);
         }
-        month = Integer.parseInt(string[0]);
-        day = Integer.parseInt(string[1]);
-        year = Integer.parseInt(string[2]);
+        else{
+            month = Integer.parseInt(string[0]);
+            day = Integer.parseInt(string[1]);
+            year = Integer.parseInt(string[2]);
+        }
     }
 
 

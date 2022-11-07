@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.File;
 
-import static fitnesschainmanager.ClassType.idClassType;
+import static com.example.gymmanagergui.FitnessClassType.idClassType;
 
 /**
  * Created a GymManager class represents the fitness manager
@@ -262,8 +262,8 @@ public class GymManager {
      * @return If the class exists in ClassSchedule return reference to the class, else return null
      */
     public FitnessClass classValidation(String isClass, String instructor, String location){
-        ClassType classtype = idClassType(isClass);
-        if(classtype == ClassType.NA) {//check if class exists
+        FitnessClassType classtype = idClassType(isClass);
+        if(classtype == FitnessClassType.NA) {//check if class exists
             System.out.printf("%s class does not exist\n", isClass);
             return null;
         }
