@@ -30,7 +30,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -43,6 +42,11 @@
             <artifactId>testng</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>munit-remote</artifactId>
+            <version>4.13.1</version>
         </dependency>
     </dependencies>
 

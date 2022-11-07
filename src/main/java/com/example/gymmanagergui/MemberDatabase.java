@@ -1,13 +1,27 @@
 package com.example.gymmanagergui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+import static com.example.gymmanagergui.Time.NA;
+
 /**
  * The MemberDatabase class holds a growable array of member objects which is used to maintain a database of all members of the gym
  * @author ALEJANDRO HERRERA-PINEDA, HURUY BELAY
  */
 public class MemberDatabase {
     private Member [] mlist;
+    MemberDatabase database;
+    ClassSchedule classSchedule;
     private int size;
     private final int NOT_FOUND = -1;
+    private final Date NA = new Date("00/00/0000");
+
+    private final String MEMBER_LIST = "src/memberList.txt";
+
+    private final String CLASS_SCHEDULE = "src/classSchedule.txt";
 
     /**
      * It initializes an instance of the MemberDatabase
@@ -124,9 +138,9 @@ public class MemberDatabase {
     public void print() {
         for(int i = 0; i < size; i++){
             if(this.mlist[i] != null)
-                System.out.println(mlist[i]);
+               mlist[i].toString();
         }
-        System.out.println("-end of list-\n");
+//        System.out.println("-end of list-\n");
     }
 
     /**
@@ -135,9 +149,9 @@ public class MemberDatabase {
     public void printMemberShipFee() {
         for(int i = 0; i < size; i++){
             if(this.mlist[i] != null)
-                System.out.println(mlist[i].printMembership());
+                mlist[i].printMembership();
         }
-        System.out.println("-end of list-\n");
+//        System.out.println("-end of list-\n");
     }
 
     /**
@@ -145,10 +159,10 @@ public class MemberDatabase {
      * */
     public void printDatabase(){
         if(isEmpty()){
-            System.out.println("Member database is empty!");
+//            System.out.println("Member database is empty!");
             return;
         }
-        System.out.println("-list of members-");
+//        System.out.println("-list of members-");
         print();
     }
 
@@ -157,7 +171,7 @@ public class MemberDatabase {
      */
     public void printByCounty() {
         if(isEmpty()){
-            System.out.println("Member database is empty!");
+//            System.out.println("Member database is empty!");
             return;
         }
         for(int i = 1; i < size; ++i){
@@ -169,7 +183,7 @@ public class MemberDatabase {
             }
             mlist[j + 1] = k;
         }
-        System.out.println("-list of members sorted by county and zipcode-");
+//        System.out.println("-list of members sorted by county and zipcode-");
         print();
     }
 
@@ -178,7 +192,7 @@ public class MemberDatabase {
      */
     public void printByExpirationDate() {
         if(isEmpty()){
-            System.out.println("Member database is empty!");
+//            System.out.println("Member database is empty!");
             return;
         }
         for(int i = 1; i < size; ++i) {
@@ -190,7 +204,7 @@ public class MemberDatabase {
             }
             mlist[j + 1] = k;
         }
-        System.out.println("-list of members sorted by membership expiration date-");
+//        System.out.println("-list of members sorted by membership expiration date-");
         print();
     }
 
@@ -199,7 +213,7 @@ public class MemberDatabase {
      */
     public void printByName() {
         if(isEmpty()){
-            System.out.println("Member database is empty!");
+//            System.out.println("Member database is empty!");
             return;
         }
         for(int i = 0; i < size; i++){
@@ -211,7 +225,191 @@ public class MemberDatabase {
             }
             mlist[j + 1] = k;
         }
-        System.out.println("-list of members sorted by last name, and first name-");
+//        System.out.println("-list of members sorted by last name, and first name-");
         print();
+    }
+
+    private Member validateMemberData(
+            String fname,
+            String lname,
+            String birth,
+            String location,
+            Operation memType
+    ){
+        Date bday = new Date(birth);
+        Location loc = Location.idLocation(location);
+
+        if(!dateValidation(fname, lname, bday, Operation.DOB))
+            return null;
+        if(loc == Location.NA){
+            System.out.printf("%s: invalid location!\n", location);
+            return null;
+        }
+        Member tempMem;
+        switch (memType){
+            case F:
+                tempMem = new Family(fname, lname, bday, loc);
+                break;
+            case P:
+                tempMem = new Premium(fname, lname, bday, loc);
+                break;
+            default:
+                tempMem = new Member(fname, lname, bday, loc);
+        }
+        if(database.getMember(tempMem)!=null){
+            System.out.printf("%s %s is already in the database.\n", tempMem.getFname(), tempMem.getLname());
+            return null;
+        }
+        return tempMem;
+    }
+    private boolean classTimeConflict(Member tempMem, FitnessClass tempClass, Operation type){
+        for(FitnessClass fitnessClass: classSchedule.getClasses()){
+            if(fitnessClass==null || fitnessClass.find(tempMem, type)==null)
+                continue;
+            if(fitnessClass!=tempClass && fitnessClass.getTime()==tempClass.getTime()){
+                System.out.printf(
+                        "%s time conflict -- %s %s has already checked in %s.\n",
+                        tempClass.getClassType().getName(),
+                        tempMem.getFname(),
+                        tempMem.getLname(),
+                        fitnessClass.getClassType().getName()
+                );
+                return false;
+            }
+            else if(fitnessClass.getClassType()==tempClass.getClassType()){
+                System.out.printf(
+                        "%s %s has already checked in %s\n",
+                        tempMem.getFname(),
+                        tempMem.getLname(),
+                        tempClass.getClassType().getName()
+                );
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean dateValidation(String fname, String lname, Date date, Operation op){
+        if(op == Operation.DOB){
+            if(!date.isValid()){
+                System.out.printf("DOB %s: invalid calendar date!\n", date.toString());
+                return false;
+            }
+            else if(date.isFuture()){
+                System.out.printf("DOB %s: cannot be today or a future date!\n", date.toString());
+                return false;
+            }
+            else if(!date.ofAge()){
+                System.out.printf("DOB %s: must be 18 or older to join!\n", date.toString());
+                return false;
+            }
+            else return true;
+        }
+        else if (op == Operation.EXP){
+            if(!date.isValid()){
+                System.out.printf("Expiration date %s: invalid calendar date!\n", date.toString());
+                return false;
+            }
+            else if(!date.isFuture()){
+                System.out.printf("%s %s %s membership expired\n", fname, lname, date.toString());
+                return false;
+            }
+            else return true;
+        }
+        return false;
+    }
+
+    private boolean checkInValidate(Member tempMem, FitnessClass tempClass, Operation type) {
+        if(tempMem instanceof Family ){
+            if(!((Family) tempMem).hasGuestPasses()){
+                System.out.printf("%s %s ran out of guest passes\n", tempMem.getFname(), tempMem.getLname());
+                return false;
+            }
+
+        }
+        //validate that member can check in
+        if(tempMem.getLocation()!=tempClass.getLocation()){
+            if(!(tempMem instanceof Family)){
+                if(type == Operation.G){
+                    System.out.println("Standard membership - guest check-in is not allowed.\n");
+                }
+                else{
+                    System.out.printf("%s %s checking in %s - standard membership location restriction\n",
+                            tempMem.getFname(),
+                            tempMem.getLname(),
+                            tempClass.getLocation().toString()
+                    );
+                }
+                return false;
+            }
+            else{
+                if(type == Operation.G){
+                    System.out.printf(
+                            "%s %s Guest checking in %s - guest location restriction\n",
+                            tempMem.getFname(),
+                            tempMem.getLname(),
+                            tempClass.getLocation().toString()
+                    );
+                }
+            }
+            return true;
+        }
+        //validate that there are no time conflicts no need to check for guests
+        if(type != Operation.G) {
+            return classTimeConflict(tempMem, tempClass, type);
+        }
+        else
+            ((Family) tempMem).useGuestPass();
+        return true;
+    }
+
+    /**
+     * Adds member to gym database
+     * If adding is successful, prints out string notifying addition.
+     * @param sc scanner object that will read user inputs
+     */
+    private void addMember(Scanner sc, Operation memType){
+        StringTokenizer tk = new StringTokenizer(sc.nextLine(), " ");
+        Member tempMem = validateMemberData(tk.nextToken(), tk.nextToken(), tk.nextToken(), tk.nextToken(), memType);
+        if(tempMem == null)
+            return;
+        database.add(tempMem);
+        System.out.printf("%s %s added.\n", tempMem.getFname(), tempMem.getLname());
+    }
+
+    /**
+     * Remove the member from the gym database
+     * And prints the first name and last name to remove
+     * If the members is not the database, it prints the member is not in database
+     * @param sc scanner object that will read user inputs
+     */
+    private void removeMember(Scanner sc){
+        StringTokenizer tk = new StringTokenizer(sc.nextLine(), " ");
+        Member tempMem = new Member(tk.nextToken(), tk.nextToken(), new Date(tk.nextToken()), NA, Location.NA);
+        if(!this.database.remove(tempMem)) {
+            System.out.println(tempMem.getFname() + " " + tempMem.getLname() + " "+ " is not in the database");
+            return;
+        }
+        System.out.println(tempMem.getFname() + " " + tempMem.getLname() + " removed");
+
+    }
+    private void importMembers(){
+        File file = new File(MEMBER_LIST);
+        try{
+            Scanner sc = new Scanner(file);
+            while(sc.hasNextLine()){
+                StringTokenizer tk = new StringTokenizer(sc.nextLine(), " ");
+                database.add(
+                        new Member(
+                                tk.nextToken(), tk.nextToken(), new Date(tk.nextToken()), new Date(tk.nextToken()), Location.idLocation(tk.nextToken())
+                        )
+                );
+            }
+        }
+        catch(FileNotFoundException e) {
+            System.out.printf("%s not found in project directory", MEMBER_LIST);
+            throw new RuntimeException(e);
+        }
+        System.out.println("-list of members loaded-");
+        database.print();
     }
 }

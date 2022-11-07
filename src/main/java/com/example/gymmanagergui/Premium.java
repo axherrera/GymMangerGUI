@@ -82,7 +82,7 @@ public class Premium extends Family{
         Family premium4 = new Premium("Mike", "Tato ", date1, date2, location4);
         Family premium5 = new Premium("Gebre", "Lakas ", date1, date2, location5);
         Family premium6 = new Premium("nani", "kibret", date3, date2, location5);
-        System.out.println(premium6.MemberShipFee());
+//        System.out.println(premium6.MemberShipFee());
 //
 //        System.out.println(premium1);
 //        System.out.println(premium4.toString());

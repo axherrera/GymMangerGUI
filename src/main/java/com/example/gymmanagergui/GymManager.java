@@ -5,7 +5,8 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.File;
 
-import static fitnesschainmanager.ClassType.idClassType;
+import static com.example.gymmanagergui.ClassType.idClassType;
+
 
 /**
  * Created a GymManager class represents the fitness manager
@@ -50,7 +51,8 @@ public class GymManager {
         if(!dateValidation(fname, lname, bday, Operation.DOB))
             return null;
         if(loc == Location.NA){
-            System.out.printf("%s: invalid location!\n", location);
+//            System.out.printf("%s: invalid location!\n", location);
+            location.toString();
             return null;
         }
         Member tempMem;
@@ -65,7 +67,9 @@ public class GymManager {
                 tempMem = new Member(fname, lname, bday, loc);
         }
         if(database.getMember(tempMem)!=null){
-            System.out.printf("%s %s is already in the database.\n", tempMem.getFname(), tempMem.getLname());
+//            System.out.printf("%s %s is already in the database.\n", tempMem.getFname(), tempMem.getLname());
+            tempMem.getLname().toString();
+            tempMem.getLname().toString();
             return null;
         }
         return tempMem;
@@ -83,26 +87,31 @@ public class GymManager {
     private boolean dateValidation(String fname, String lname, Date date, Operation op){
         if(op == Operation.DOB){
             if(!date.isValid()){
-                System.out.printf("DOB %s: invalid calendar date!\n", date.toString());
+//                System.out.printf("DOB %s: invalid calendar date!\n", date.toString());
+                date.toString();
                 return false;
             }
             else if(date.isFuture()){
-                System.out.printf("DOB %s: cannot be today or a future date!\n", date.toString());
+//                System.out.printf("DOB %s: cannot be today or a future date!\n", date.toString());
+                date.toString();
                 return false;
             }
             else if(!date.ofAge()){
-                System.out.printf("DOB %s: must be 18 or older to join!\n", date.toString());
+//                System.out.printf("DOB %s: must be 18 or older to join!\n", date.toString());
+                date.toString();
                 return false;
             }
             else return true;
         }
         else if (op == Operation.EXP){
             if(!date.isValid()){
-                System.out.printf("Expiration date %s: invalid calendar date!\n", date.toString());
+//                System.out.printf("Expiration date %s: invalid calendar date!\n", date.toString());
+                date.toString();
                 return false;
             }
             else if(!date.isFuture()){
-                System.out.printf("%s %s %s membership expired\n", fname, lname, date.toString());
+//                System.out.printf("%s %s %s membership expired\n", fname, lname, date.toString());
+                date.toString();
                 return false;
             }
             else return true;
@@ -122,22 +131,20 @@ public class GymManager {
             if(fitnessClass==null || fitnessClass.find(tempMem, type)==null)
                 continue;
             if(fitnessClass!=tempClass && fitnessClass.getTime()==tempClass.getTime()){
-                System.out.printf(
-                        "%s time conflict -- %s %s has already checked in %s.\n",
-                        tempClass.getClassType().getName(),
-                        tempMem.getFname(),
-                        tempMem.getLname(),
-                        fitnessClass.getClassType().getName()
-                );
+
+                        tempClass.getClassType().getName();
+                        tempMem.getFname();
+                        tempMem.getLname();
+                        fitnessClass.getClassType().getName();
+
                 return false;
             }
             else if(fitnessClass.getClassType()==tempClass.getClassType()){
-                System.out.printf(
-                        "%s %s has already checked in %s\n",
-                        tempMem.getFname(),
-                        tempMem.getLname(),
-                        tempClass.getClassType().getName()
-                );
+
+                        tempMem.getFname();
+                        tempMem.getLname();
+                        tempClass.getClassType().getName();
+
                 return false;
             }
         }
@@ -154,7 +161,7 @@ public class GymManager {
     private boolean checkInValidate(Member tempMem, FitnessClass tempClass, Operation type) {
         if(tempMem instanceof Family ){
             if(!((Family) tempMem).hasGuestPasses()){
-                System.out.printf("%s %s ran out of guest passes\n", tempMem.getFname(), tempMem.getLname());
+                 tempMem.getFname().toString(); tempMem.getLname().toString();
                 return false;
             }
 
@@ -163,25 +170,24 @@ public class GymManager {
         if(tempMem.getLocation()!=tempClass.getLocation()){
             if(!(tempMem instanceof Family)){
                 if(type == Operation.G){
-                    System.out.println("Standard membership - guest check-in is not allowed.\n");
+//                    System.out.println("Standard membership - guest check-in is not allowed.\n");
                 }
                 else{
-                    System.out.printf("%s %s checking in %s - standard membership location restriction\n",
-                            tempMem.getFname(),
-                            tempMem.getLname(),
-                            tempClass.getLocation().toString()
-                    );
+
+                            tempMem.getFname();
+                            tempMem.getLname();
+                            tempClass.getLocation().toString();
+
                 }
                 return false;
             }
             else{
                 if(type == Operation.G){
-                    System.out.printf(
-                            "%s %s Guest checking in %s - guest location restriction\n",
-                            tempMem.getFname(),
-                            tempMem.getLname(),
-                            tempClass.getLocation().toString()
-                    );
+
+                            tempMem.getFname();
+                            tempMem.getLname();
+                            tempClass.getLocation().toString();
+
                 }
             }
             return true;
@@ -206,7 +212,7 @@ public class GymManager {
         if(tempMem == null)
             return;
         database.add(tempMem);
-        System.out.printf("%s %s added.\n", tempMem.getFname(), tempMem.getLname());
+        tempMem.getFname(); tempMem.getLname();
     }
 
     /**
@@ -219,10 +225,10 @@ public class GymManager {
         StringTokenizer tk = new StringTokenizer(sc.nextLine(), " ");
         Member tempMem = new Member(tk.nextToken(), tk.nextToken(), new Date(tk.nextToken()), NA, Location.NA);
         if(!this.database.remove(tempMem)) {
-            System.out.println(tempMem.getFname() + " " + tempMem.getLname() + " "+ " is not in the database");
+            tempMem.getFname().toString(); tempMem.getLname().toString();
             return;
         }
-        System.out.println(tempMem.getFname() + " " + tempMem.getLname() + " removed");
+       tempMem.getFname().toString(); tempMem.getLname().toString();
 
     }
 
@@ -231,25 +237,25 @@ public class GymManager {
      */
     private void displayClassSchedule(){
         if(classSchedule.isEmpty()){
-            System.out.println("Fitness class schedule is empty");
+//            System.out.println("Fitness class schedule is empty");
             return;
         }
-        System.out.println("\n-Fitness Classes-");
+//        System.out.println("\n-Fitness Classes-");
         for(FitnessClass fitnessClass: classSchedule.getClasses()){
             if(fitnessClass==null)
                 continue;
-            System.out.println(fitnessClass.toString());
+           fitnessClass.toString();
             if(fitnessClass.checkedIn.isEmpty())
                 continue;
-            System.out.println("   ** participants **");
+//            System.out.println("   ** participants **");
             fitnessClass.classRoster(Operation.M);
 
             if(fitnessClass.guests.isEmpty())
                 continue;
-            System.out.println("   ** guests **");
+//            System.out.println("   ** guests **");
             fitnessClass.classRoster(Operation.G);
         }
-        System.out.println("-end of class list-");
+//        System.out.println("-end of class list-");
     }
 
     /**
@@ -264,7 +270,8 @@ public class GymManager {
     public FitnessClass classValidation(String isClass, String instructor, String location){
         ClassType classtype = idClassType(isClass);
         if(classtype == ClassType.NA) {//check if class exists
-            System.out.printf("%s class does not exist\n", isClass);
+//            System.out.printf("%s class does not exist\n", isClass);
+            isClass.toString();
             return null;
         }
         boolean temp = false;//checks if instructor exists for class
@@ -277,12 +284,14 @@ public class GymManager {
             }
         }
         if(!temp){
-            System.out.printf("%s - instructor does not exist.\n", instructor);
+//            System.out.printf("%s - instructor does not exist.\n", instructor);
+            instructor.toString();
             return null;
         }
         Location l = Location.idLocation(location);
         if( l ==Location.NA){//check if location exists
-            System.out.printf("%s - invalid location.\n", location);
+//            System.out.printf("%s - invalid location.\n", location);
+            location.toString();
             return null;
         }
         for(FitnessClass c : classSchedule.getClasses()){
@@ -295,7 +304,7 @@ public class GymManager {
                 return c;
             }
         }
-        System.out.printf("%s by %s does not exist at %s.\n", isClass, instructor, location);
+//        System.out.printf("%s by %s does not exist at %s.\n", isClass, instructor, location);
         return null;
     }
 
@@ -322,13 +331,15 @@ public class GymManager {
             return;
 
         if (database.getMember(new Member(fname, lname, bday, NA, Location.NA)) == null) {
-            System.out.printf("%s %s %s is not in the database.\n", fname, lname, bday);
+//            System.out.printf("%s %s %s is not in the database.\n", fname, lname, bday);
+            fname.toString();lname.toString();bday.toString();
             return;
         }
         Member tempMem = database.getMember(new Member(fname, lname, bday, NA, Location.NA));
 
         if (op == Operation.DROP) {//check if member is in class and respond accordingly
-            System.out.println(classSchedule.getFitnessClass(fClass).dropClass(tempMem, memType));
+//            System.out.println(classSchedule.getFitnessClass(fClass).dropClass(tempMem, memType));
+            classSchedule.getFitnessClass(fClass).dropClass(tempMem, memType);
             return;
         }
         if (!checkInValidate(tempMem, fClass, memType))
@@ -336,7 +347,8 @@ public class GymManager {
         if (!dateValidation(fname, lname, tempMem.getExpire(), Operation.EXP))
             return;
 
-        System.out.println(fClass.checkIn(tempMem, memType));
+//        System.out.println(fClass.checkIn(tempMem, memType));
+        fClass.checkIn(tempMem, memType);
     }
 
 
@@ -359,10 +371,11 @@ public class GymManager {
             }
         }
         catch(FileNotFoundException e) {
-            System.out.printf("%s not found in project directory", MEMBER_LIST);
+//            System.out.printf("%s not found in project directory", MEMBER_LIST);
+            MEMBER_LIST.toString();
             throw new RuntimeException(e);
         }
-        System.out.println("-list of members loaded-");
+//        System.out.println("-list of members loaded-");
         database.print();
     }
 
@@ -387,7 +400,8 @@ public class GymManager {
             }
         displayClassSchedule();
         } catch (FileNotFoundException e) {
-            System.out.printf("%S not found in project directory", CLASS_SCHEDULE);
+//            System.out.printf("%S not found in project directory", CLASS_SCHEDULE);
+            CLASS_SCHEDULE.toString();
             throw new RuntimeException(e);
         }
     }

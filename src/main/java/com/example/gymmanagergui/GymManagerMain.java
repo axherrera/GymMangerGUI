@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GymManagerMain extends Application {
+
     public void start (Stage stage) throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader(GymManagerMain.class.getResource("GymMangagerViewer"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 600);
@@ -15,4 +16,5 @@ public class GymManagerMain extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
 }

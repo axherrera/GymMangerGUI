@@ -161,14 +161,14 @@ public class Date implements Comparable<Date> {
             Date date = new Date("01/02/1990");
             Date date1 = new Date("01/02/2022");
 
-            System.out.println(date.toString());
-            System.out.println(date.isValid());
-            System.out.println(date.equals(date1));
-            System.out.println(date.isFuture());
-            System.out.println(date.compareTo(date1));
-            System.out.println(date.isLeapYear());
-            System.out.println(date1.ofAge());
-
-            System.out.println(genExpDate());
+//            System.out.println(date.toString());
+//            System.out.println(date.isValid());
+//            System.out.println(date.equals(date1));
+//            System.out.println(date.isFuture());
+//            System.out.println(date.compareTo(date1));
+//            System.out.println(date.isLeapYear());
+//            System.out.println(date1.ofAge());
+//
+//            System.out.println(genExpDate());
     }
 }
