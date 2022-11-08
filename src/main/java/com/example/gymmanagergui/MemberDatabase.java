@@ -1,5 +1,9 @@
 package com.example.gymmanagergui;
 
+import java.io.File;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
 /**
  * The MemberDatabase class holds a growable array of member objects which is used to maintain a database of all members of the gym
  * @author ALEJANDRO HERRERA-PINEDA, HURUY BELAY
@@ -121,44 +125,43 @@ public class MemberDatabase {
     /**
      * Prints database as is
      */
-    public void print() {
+    public String print() {
+        StringBuilder r = new StringBuilder();
         for(int i = 0; i < size; i++){
             if(this.mlist[i] != null)
-                System.out.println(mlist[i]);
+                r.append(mlist[i].toString()).append('\n');
         }
-        System.out.println("-end of list-\n");
+        return r.toString() + "-end of list-\n";
     }
 
     /**
      * Prints database by membership fee
      */
-    public void printMemberShipFee() {
+    public String printMemberShipFee() {
+        StringBuilder r = new StringBuilder();
         for(int i = 0; i < size; i++){
             if(this.mlist[i] != null)
-                System.out.println(mlist[i].printMembership());
+                r.append(mlist[i].printMembership()).append('\n');
         }
-        System.out.println("-end of list-\n");
+        return r.toString() + ("-end of list-\n");
     }
 
     /**
      * Wrapper method for print(). Will print the database with formatting.
      * */
-    public void printDatabase(){
+    public String printDatabase(){
         if(isEmpty()){
-            System.out.println("Member database is empty!");
-            return;
+            return ("Member database is empty!\n");
         }
-        System.out.println("-list of members-");
-        print();
+        return ("-list of members-\n") + print();
     }
 
     /**
      * prints database after sorting by county and then zipcode
      */
-    public void printByCounty() {
+    public String printByCounty() {
         if(isEmpty()){
-            System.out.println("Member database is empty!");
-            return;
+            return ("Member database is empty!\n");
         }
         for(int i = 1; i < size; ++i){
             Member k = mlist[i];
@@ -169,17 +172,15 @@ public class MemberDatabase {
             }
             mlist[j + 1] = k;
         }
-        System.out.println("-list of members sorted by county and zipcode-");
-        print();
+        return ("-list of members sorted by county and zipcode-\n") + print();
     }
 
     /**
      * Sorts by the expiration date and then prints database
      */
-    public void printByExpirationDate() {
+    public String printByExpirationDate() {
         if(isEmpty()){
-            System.out.println("Member database is empty!");
-            return;
+            return ("Member database is empty!\n");
         }
         for(int i = 1; i < size; ++i) {
             Member k = mlist[i];
@@ -190,18 +191,17 @@ public class MemberDatabase {
             }
             mlist[j + 1] = k;
         }
-        System.out.println("-list of members sorted by membership expiration date-");
-        print();
+        return ("-list of members sorted by membership expiration date-\n") + print();
     }
 
     /**
      * Prints database after sorting by last name and then first name
      */
-    public void printByName() {
+    public String printByName() {
         if(isEmpty()){
-            System.out.println("Member database is empty!");
-            return;
+            return ("Member database is empty!\n");
         }
+        StringBuilder r = new StringBuilder();
         for(int i = 0; i < size; i++){
             Member k = mlist[i];
             int j = i - 1;
@@ -211,7 +211,26 @@ public class MemberDatabase {
             }
             mlist[j + 1] = k;
         }
-        System.out.println("-list of members sorted by last name, and first name-");
-        print();
+        return ("-list of members sorted by last name, and first name-\n") +
+                print();
+    }
+
+    public String importMembers(File file){
+        try{
+            Scanner sc = new Scanner(file);
+            while(sc.hasNextLine()){
+                StringTokenizer tk = new StringTokenizer(sc.nextLine(), " ");
+                this.add(
+                        new Member(
+                                tk.nextToken(), tk.nextToken(), new Date(tk.nextToken()), new Date(tk.nextToken()), Location.idLocation(tk.nextToken())
+                        )
+                );
+            }
+            return "-list of members loaded-\n" +
+                    this.print();
+        }
+        catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

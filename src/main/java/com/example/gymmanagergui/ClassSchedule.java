@@ -1,5 +1,12 @@
 package com.example.gymmanagergui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+import static com.example.gymmanagergui.FitnessClassType.idClassType;
+
 /**
  * The ClassSchedule class holds a growable array of FitnessClass objects which is used to maintain a database of all
  * classes offered by the gym.
@@ -103,5 +110,47 @@ public class ClassSchedule {
         if(find(fitnessClass) == NOT_FOUND)
             return null;
         return classes[find(fitnessClass)];
+    }
+
+    public String displayClassSchedule(){
+        if(this.isEmpty()){
+            return ("Fitness class schedule is empty\n");
+        }
+        StringBuilder r = new StringBuilder();
+        r.append("\n-Fitness Classes-\n");
+        for(FitnessClass fitnessClass: this.getClasses()){
+            if(fitnessClass==null)
+                continue;
+            r.append(fitnessClass).append('\n');
+            if(fitnessClass.checkedIn.isEmpty())
+                continue;
+            r.append("**** participants ****\n").append(fitnessClass.classRoster(Operation.M));
+
+            if(fitnessClass.guests.isEmpty())
+                continue;
+            r.append("**** guests ****\n").append(fitnessClass.classRoster(Operation.G));
+        }
+        r.append("-end of class list-");
+        return r.toString();
+    }
+
+    public String loadSchedule(File file){
+        try{
+            Scanner sc = new Scanner(file);
+            while(sc.hasNextLine()){
+                StringTokenizer tk = new StringTokenizer(sc.nextLine(), " ");
+                this.add(
+                        new FitnessClass(
+                                idClassType(tk.nextToken()),
+                                tk.nextToken(),
+                                Time.getTime(tk.nextToken()),
+                                Location.idLocation(tk.nextToken())
+                        )
+                );
+            }
+            return displayClassSchedule();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

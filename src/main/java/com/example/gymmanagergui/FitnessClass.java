@@ -1,5 +1,12 @@
 package com.example.gymmanagergui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+import static com.example.gymmanagergui.FitnessClassType.idClassType;
+
 /**
  * Instance of a fitness class which consists of a class type and database of all checked in members
  * @author ALEJANDRO HERRERA-PINEDA, HURUY BELAY
@@ -126,11 +133,11 @@ public class FitnessClass {
      * It prints class information as well as all members attending
      * If class is empty, does not attempt to print out the participant list
      */
-    public void classRoster(Operation type) {
+    public String classRoster(Operation type) {
         if(type == Operation.G)
-            guests.printDatabase();
+            return guests.printDatabase();
         else
-            checkedIn.printDatabase();
+            return checkedIn.printDatabase();
     }
 
 

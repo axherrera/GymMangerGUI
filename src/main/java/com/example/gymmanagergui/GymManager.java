@@ -417,7 +417,7 @@ public class GymManager {
                 this.database.printByCounty();
                 break;
             case "PN":
-                this.database.printByName();;
+                this.database.printByName();
                 break;
             case "PD":
                 this.database.printByExpirationDate();

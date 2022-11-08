@@ -3,17 +3,16 @@ package com.example.gymmanagergui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import static com.example.gymmanagergui.FitnessClassType.idClassType;
 
@@ -21,7 +20,9 @@ public class GymManagerController implements Initializable {
 
     MemberDatabase database = new MemberDatabase();
     ClassSchedule classSchedule = new ClassSchedule();
+
     //constants
+    private final Date NA = new Date("00/00/0000");
     private final Location [] locations = {
             Location.BRIDGEWATER,
             Location.EDISON,
@@ -139,67 +140,110 @@ public class GymManagerController implements Initializable {
     //**FITNESS CLASS TAB METHODS**/
     @FXML
     void fcCheckin(ActionEvent event) {
-        String fname = fcFirstName.getText();
-        String lname = fcLastName.getText();
-        Location location = fcLocation.getValue();
-        String instructor = fcInstructor.getText();
-        FitnessClassType fcTypeValue = fcType.getValue();
+        try{
+            String fName = fcFirstName.getText();
+            String lName = fcLastName.getText();
+            Date dob = new Date(fcDatePicker.getValue().toString());
+            Location location = fcLocation.getValue();
+            String instructor = fcInstructor.getText();
+            FitnessClassType fcTypeValue = fcType.getValue();
+            Operation memtype = fcMember.isSelected()?
+                    Operation.M:
+                    Operation.G;
 
-        FitnessClass fClass = classValidation(fcTypeValue, instructor, location);
-        if (fClass == null)
-            return;
+            addOrDropClass(fName, lName, dob, location, instructor, fcTypeValue, memtype, Operation.CHK);
 
+        }
+        catch (NullPointerException e){
+            textArea.appendText("Must provide all information to check into a class.");
+        }
 
     }
 
     @FXML
     void fcCheckout(ActionEvent event) {
+        try{
+            String fName = fcFirstName.getText();
+            String lName = fcLastName.getText();
+            Date dob = new Date(fcDatePicker.getValue().toString());
+            Location location = fcLocation.getValue();
+            String instructor = fcInstructor.getText();
+            FitnessClassType fcTypeValue = fcType.getValue();
+            Operation memtype = fcMember.isSelected()?
+                    Operation.M:
+                    Operation.G;
 
+            addOrDropClass(fName, lName, dob, location, instructor, fcTypeValue, memtype, Operation.DROP);
+
+        }
+        catch (NullPointerException e){
+            textArea.appendText("Must provide all information to check into a class.");
+        }
     }
 
     //**GYM INFO TAB METHODS
     @FXML
     void loadClassSchedule(ActionEvent event) {
-
+        try{
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Open Source File for the Import");
+            chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                    new FileChooser.ExtensionFilter("All Files", "*.*"));
+            Stage stage = new Stage();
+            File sourceFile = chooser.showOpenDialog(stage);
+            textArea.appendText(classSchedule.loadSchedule(sourceFile));
+        }
+        catch(RuntimeException e){
+            textArea.appendText("There was an error loading your information. Try another file.");
+        }
     }
 
     @FXML
     void loadMembers(ActionEvent event) {
-
+        try{
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Open Source File for the Import");
+            chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+                    new FileChooser.ExtensionFilter("All Files", "*.*"));
+            Stage stage = new Stage();
+            File sourceFile = chooser.showOpenDialog(stage);
+            textArea.appendText(database.importMembers(sourceFile));
+        }
+        catch(RuntimeException e){
+            textArea.appendText("There was an error loading your information. Try another file.");
+        }
     }
 
     @FXML
     void printByCounty(ActionEvent event) {
-
+        textArea.appendText(this.database.printByCounty());
     }
 
     @FXML
     void printByExpriation(ActionEvent event) {
-
+        textArea.appendText(this.database.printByExpirationDate());
     }
 
     @FXML
     void printByName(ActionEvent event) {
+        textArea.appendText(this.database.printByName());
 
     }
 
     @FXML
     void printClassSchedule(ActionEvent event) {
-
-    }
-
-    @FXML
-    void printFirstBill(ActionEvent event) {
-
+        textArea.appendText(classSchedule.displayClassSchedule());
     }
 
     @FXML
     void printMemDatabase(ActionEvent event) {
+        textArea.appendText(this.database.printDatabase());
 
     }
 
     @FXML
-    void printNextBill(ActionEvent event) {
+    void printFees(ActionEvent event) {
+        textArea.appendText(database.printMemberShipFee());
 
     }
 
@@ -310,4 +354,132 @@ public class GymManagerController implements Initializable {
         return null;
     }
 
+    /**
+     * Adds or Drops class
+     * @param op operation, either add or drop
+     */
+    private void addOrDropClass(
+            String fName,
+            String lName,
+            Date dob,
+            Location location,
+            String instructor,
+            FitnessClassType fcTypeValue,
+            Operation memType,
+            Operation op
+    ){
+        FitnessClass fClass = classValidation(fcTypeValue, instructor, location);
+        if (fClass == null)
+            return;
+
+        if (!dateValidation(fName, lName, dob, Operation.DOB))
+            return;
+
+        if (database.getMember(new Member(fName, lName, dob, NA, Location.NA)) == null) {
+            textArea.appendText(String.format("%s %s %s is not in the database.\n", fName, lName, dob));
+            return;
+        }
+        Member tempMem = database.getMember(new Member(fName, lName, dob, NA, Location.NA));
+
+        if (op == Operation.DROP) {//check if member is in class and respond accordingly
+            textArea.appendText(classSchedule.getFitnessClass(fClass).dropClass(tempMem, memType));
+            return;
+        }
+        if (!checkInValidate(tempMem, fClass, memType))
+            return;
+        if (!dateValidation(fName, lName, tempMem.getExpire(), Operation.EXP))
+            return;
+
+        textArea.appendText(fClass.checkIn(tempMem, memType));
+
+}
+
+    /**
+     * check that the there is no conflict with other classes, member is not already checked in
+     * @param tempMem member object
+     * @param tempClass specific class
+     * @param type type of check in: member/guest
+     * @return boolean that shows whether member can check into class or not
+     */
+    private boolean checkInValidate(Member tempMem, FitnessClass tempClass, Operation type) {
+        if(tempMem instanceof Family ){
+            if(!((Family) tempMem).hasGuestPasses()){
+                textArea.appendText(String.format("%s %s ran out of guest passes\n", tempMem.getFname(), tempMem.getLname()));
+                return false;
+            }
+
+        }
+        //validate that member can check in
+        if(tempMem.getLocation()!=tempClass.getLocation()){
+            if(!(tempMem instanceof Family)){
+                if(type == Operation.G){
+                    textArea.appendText(("Standard membership - guest check-in is not allowed.\n"));
+                }
+                else{
+                    textArea.appendText(String.format("%s %s checking in %s - standard membership location restriction\n",
+                            tempMem.getFname(),
+                            tempMem.getLname(),
+                            tempClass.getLocation().toString()
+                            )
+                    );
+                }
+                return false;
+            }
+            else{
+                if(type == Operation.G){
+                    textArea.appendText(String.format(
+                            "%s %s Guest checking in %s - guest location restriction\n",
+                            tempMem.getFname(),
+                            tempMem.getLname(),
+                            tempClass.getLocation().toString()
+                            )
+                    );
+                }
+            }
+            return true;
+        }
+        //validate that there are no time conflicts no need to check for guests
+        if(type != Operation.G) {
+            return classTimeConflict(tempMem, tempClass, type);
+        }
+        else
+            ((Family) tempMem).useGuestPass();
+        return true;
+    }
+
+    /**
+     *
+     * @param tempMem member object
+     * @param tempClass specific class
+     * @param type type of check in: member/guest
+     * @return returns a boolean which tells if there are time conflicts between classes or not
+     */
+    private boolean classTimeConflict(Member tempMem, FitnessClass tempClass, Operation type){
+        for(FitnessClass fitnessClass: classSchedule.getClasses()){
+            if(fitnessClass==null || fitnessClass.find(tempMem, type)==null)
+                continue;
+            if(fitnessClass!=tempClass && fitnessClass.getTime()==tempClass.getTime()){
+                textArea.appendText(String.format(
+                        "%s time conflict -- %s %s has already checked in %s.\n",
+                        tempClass.getClassType().getName(),
+                        tempMem.getFname(),
+                        tempMem.getLname(),
+                        fitnessClass.getClassType().getName()
+                        )
+                );
+                return false;
+            }
+            else if(fitnessClass.getClassType()==tempClass.getClassType()){
+                textArea.appendText(String.format(
+                        "%s %s has already checked in %s\n",
+                        tempMem.getFname(),
+                        tempMem.getLname(),
+                        tempClass.getClassType().getName()
+                        )
+                );
+                return false;
+            }
+        }
+        return true;
+    }
 }
