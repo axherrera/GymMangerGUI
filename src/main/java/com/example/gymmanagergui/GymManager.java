@@ -246,10 +246,10 @@ public class GymManager {
 
             if(fitnessClass.guests.isEmpty())
                 continue;
-            System.out.println("   ** guests **");
+//            System.out.println("   ** guests **");
             fitnessClass.classRoster(Operation.G);
         }
-        System.out.println("-end of class list-");
+//        System.out.println("-end of class list-");
     }
 
     /**
