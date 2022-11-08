@@ -109,7 +109,7 @@ public class Family extends Member{
         Member family4 = new Family("Mike", "Tato ", date1, date2, location4);
         Member family5 = new Family("Gebre", "Lakas ", date1, date2, location5);
         Member family6 = new Family("nani", "kibret", date3, date2, location5);
-        System.out.println(family6.MemberShipFee());
+//        System.out.println(family6.MemberShipFee());
 
 //        System.out.println(family1);
 //        System.out.println(family4.toString());
