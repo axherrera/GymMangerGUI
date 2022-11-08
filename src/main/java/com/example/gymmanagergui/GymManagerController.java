@@ -9,12 +9,12 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
-import java.util.Scanner;
-import java.util.StringTokenizer;
 
-import static com.example.gymmanagergui.FitnessClassType.idClassType;
+/**
+ * The GymManagerController class holds all the operations needed to operate the GymManager GUI
+ * @author ALEJANDRO HERRERA-PINEDA, HURUY BELAY
+ */
 
 public class GymManagerController implements Initializable {
 
@@ -51,7 +51,7 @@ public class GymManagerController implements Initializable {
     private ToggleGroup memType;
 
     @FXML
-    private RadioButton dbStandard, dbFamily,dbPremium;
+    private RadioButton dbStandard, dbFamily, dbPremium;
 
     //Fitness Class Tab
     @FXML
@@ -84,6 +84,11 @@ public class GymManagerController implements Initializable {
 
     //METHODS
 
+    /**
+     * Initializes the combo boxes that are used in the GUI
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -94,6 +99,11 @@ public class GymManagerController implements Initializable {
     }
 
     //**MEMBERSHIP TAB METHODS**/
+
+    /**
+     * Will attempt to add a member to the member database given the input from the GUI
+     * @param event Event that calls this method is the selection of the 'Add' button in GUI
+     */
     @FXML
     void dbAdd(ActionEvent event) {
         try{
@@ -118,6 +128,10 @@ public class GymManagerController implements Initializable {
 
     }
 
+    /**
+     * Will attempt to remove a member from the database given the user input from the GUI
+     * @param event Event that calls this method is the selection of the 'Remove' button in GUI
+     */
     @FXML
     void dbRemove(ActionEvent event) {
         try {
@@ -138,6 +152,11 @@ public class GymManagerController implements Initializable {
     }
 
     //**FITNESS CLASS TAB METHODS**/
+
+    /**
+     * Will attempt to check a member into a specified class given the input from the GUI
+     * @param event Event that calls this method is the selection of the 'Check In' button in GUI
+     */
     @FXML
     void fcCheckin(ActionEvent event) {
         try{
@@ -160,6 +179,10 @@ public class GymManagerController implements Initializable {
 
     }
 
+    /**
+     * Will attempt to check member out of a class given the input from the GUI
+     * @param event Event that calls this method is the selection of the 'Check Out' button in GUI
+     */
     @FXML
     void fcCheckout(ActionEvent event) {
         try{
@@ -182,6 +205,11 @@ public class GymManagerController implements Initializable {
     }
 
     //**GYM INFO TAB METHODS
+
+    /**
+     * Will attempt to load class schedule from file selected by user in GUI
+     * @param event Event that calls this method is the selection of 'Load class schedule from file' in GUI
+     */
     @FXML
     void loadClassSchedule(ActionEvent event) {
         try{
@@ -198,6 +226,10 @@ public class GymManagerController implements Initializable {
         }
     }
 
+    /**
+     * Will attempt to load members from file selected by user in GUI
+     * @param event Event that calls this method is the selection of 'Load Member List by File' in GUI
+     */
     @FXML
     void loadMembers(ActionEvent event) {
         try{
@@ -214,33 +246,57 @@ public class GymManagerController implements Initializable {
         }
     }
 
+    /**
+     * Will print member list by county
+     * @param event Event that calls this method is the selection of 'Print by County/Zipcode' in GUI
+     */
     @FXML
     void printByCounty(ActionEvent event) {
         textArea.appendText(this.database.printByCounty());
     }
 
+    /**
+     * Will print member list by expiration date
+     * @param event Event that calls this method is the selection of 'Print by Expiation Date' in GUI
+     */
     @FXML
     void printByExpriation(ActionEvent event) {
         textArea.appendText(this.database.printByExpirationDate());
     }
 
+    /**
+     * Will print member list by name
+     * @param event Event that calls this method is the selection of 'Print by First/Last name' in GUI
+     */
     @FXML
     void printByName(ActionEvent event) {
         textArea.appendText(this.database.printByName());
 
     }
 
+    /**
+     * Will print information on all scheduled classes
+     * @param event Event that calls this method is the selection of 'Show all classes' in GUI
+     */
     @FXML
     void printClassSchedule(ActionEvent event) {
         textArea.appendText(classSchedule.displayClassSchedule());
     }
 
+    /**
+     * Will print member list
+     * @param event Event that calls this method is the selection of 'Print' in GUI
+     */
     @FXML
     void printMemDatabase(ActionEvent event) {
         textArea.appendText(this.database.printDatabase());
 
     }
 
+    /**
+     * Will print member list by fees
+     * @param event Event that calls this method is the selection of 'Print by Fees' in GUI
+     */
     @FXML
     void printFees(ActionEvent event) {
         textArea.appendText(database.printMemberShipFee());
@@ -318,7 +374,7 @@ public class GymManagerController implements Initializable {
     }
 
     /**
-     * method that takes user input and checks whetehr or not the class detailed by input corresponds
+     * method that takes user input and checks whether or not the class detailed by input corresponds
      * to a real class in the class schedule. If the class queried is a real class, method will return
      * a reference to the class in the ClassSchedule object. Otherwise, it will return null.
      * @param classtype type of class being queried
@@ -355,8 +411,15 @@ public class GymManagerController implements Initializable {
     }
 
     /**
-     * Adds or Drops class
-     * @param op operation, either add or drop
+    * Adds or Drops class
+     * @param fName first name of member
+     * @param lName last name of member
+     * @param dob date of birth of member
+     * @param location location of class
+     * @param instructor instructor of class
+     * @param fcTypeValue type of class
+     * @param memType type of member checking into class; member/guest
+     * @param op operation to be pursued; add/drop clas
      */
     private void addOrDropClass(
             String fName,
@@ -448,7 +511,7 @@ public class GymManagerController implements Initializable {
     }
 
     /**
-     *
+     *Method that checks whether there are any time conflicts when attempting to check in to a class
      * @param tempMem member object
      * @param tempClass specific class
      * @param type type of check in: member/guest

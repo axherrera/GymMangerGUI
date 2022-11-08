@@ -261,6 +261,6 @@
       </TabPane>
    </center>
    <bottom>
-      <TextArea fx:id="textArea" prefHeight="143.0" prefWidth="589.0" BorderPane.alignment="CENTER" />
+      <TextArea fx:id="textArea" prefHeight="204.0" prefWidth="612.0" BorderPane.alignment="CENTER" />
    </bottom>
 </BorderPane>

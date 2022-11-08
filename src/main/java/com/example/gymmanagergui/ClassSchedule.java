@@ -112,6 +112,10 @@ public class ClassSchedule {
         return classes[find(fitnessClass)];
     }
 
+    /**
+     * Creates string of class schedule
+     * @return returns a string of class schedule
+     */
     public String displayClassSchedule(){
         if(this.isEmpty()){
             return ("Fitness class schedule is empty\n");
@@ -134,6 +138,11 @@ public class ClassSchedule {
         return r.toString();
     }
 
+    /**
+     * Loads Schedule from selected file
+     * @param file file to read schedule from
+     * @return returns a string of loaded schedule
+     */
     public String loadSchedule(File file){
         try{
             Scanner sc = new Scanner(file);

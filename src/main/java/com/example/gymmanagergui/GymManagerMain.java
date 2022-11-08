@@ -8,6 +8,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * GymManagerMain is used to instantiate and launching the GymMangerViewer
+ * @author ALEJANDRO HERRERA-PINEDA, HURUY BELAY
+ */
+
 public class GymManagerMain extends Application {
     public void start (Stage stage) throws IOException{
         try{

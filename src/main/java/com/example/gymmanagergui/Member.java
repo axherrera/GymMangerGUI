@@ -168,7 +168,10 @@ public class Member implements Comparable<Member>{
         }
     }
 
-
+    /**
+     * Will calculate the membership fee for the given member
+     * @return returns the member fee in string format
+     */
     public String MemberShipFee(){
         DecimalFormat df = new DecimalFormat("0.##");
         return df.format(MEMBER_ONE_TIME_FEE + MEMBER_MONTHLY_FEE * 3);

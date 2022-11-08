@@ -124,6 +124,7 @@ public class MemberDatabase {
 
     /**
      * Prints database as is
+     * @return returns string of database
      */
     public String print() {
         StringBuilder r = new StringBuilder();
@@ -136,6 +137,7 @@ public class MemberDatabase {
 
     /**
      * Prints database by membership fee
+     * @return returns string of database sorted by membership fee
      */
     public String printMemberShipFee() {
         StringBuilder r = new StringBuilder();
@@ -147,7 +149,8 @@ public class MemberDatabase {
     }
 
     /**
-     * Wrapper method for print(). Will print the database with formatting.
+     * Wrapper method for print()
+     * @return  return string the database with formatting.
      * */
     public String printDatabase(){
         if(isEmpty()){
@@ -157,7 +160,7 @@ public class MemberDatabase {
     }
 
     /**
-     * prints database after sorting by county and then zipcode
+     * @return returns string of database after sorting by county and then zipcode
      */
     public String printByCounty() {
         if(isEmpty()){
@@ -176,7 +179,7 @@ public class MemberDatabase {
     }
 
     /**
-     * Sorts by the expiration date and then prints database
+     * * @return returns string of database sorted by expiration date
      */
     public String printByExpirationDate() {
         if(isEmpty()){
@@ -195,7 +198,7 @@ public class MemberDatabase {
     }
 
     /**
-     * Prints database after sorting by last name and then first name
+     * @return returns string of database after sorting by last name and then first name
      */
     public String printByName() {
         if(isEmpty()){
@@ -215,6 +218,11 @@ public class MemberDatabase {
                 print();
     }
 
+    /**
+     * Imports members from selected file
+     * @param file file to read member data from
+     * @return returns string of imported members
+     */
     public String importMembers(File file){
         try{
             Scanner sc = new Scanner(file);
